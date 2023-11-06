@@ -17,39 +17,38 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
 
-    @Mock
+    @Mock // MailSendClient를 목킹하여 실제 이메일은 전송 X
     private MailSendClient mailSendClient;
-    @Mock
+    @Mock // Repository를 목킹하여 실제 데이터베이스 작업은 발생 X
     private MailSendHistoryRepository mailSendHistoryRepository;
-    @InjectMocks
+    @InjectMocks // 위에서 목킹한 객체들을 mailService에 주입. 이 서비스는 의존성에 대해 Mock을 사용
     private MailService mailService;
-    @Spy
+    @Spy // 실제 MailSendClient에 대한 스파이, 실제 객체이지만 일부 메서드에 대해서는 스터빙
     private MailSendClient spyMailSendClient;
 
     /**
-     * 현재 MailServiceTest 테스트 코드에서는 @Mock과 @Spy를 MailSendClient에 사용되고 있으며, 이 둘이 서로 간섭을 할 수 있어서 테스트에 실패 할 수 있는데
-     * 강의로 공부중이기 때문에 참고할려고 @Spy, @Mock을 같이 쓴거지 실제에서는 같이 사용하지 말자
+     * 참고: 실제로는 @Spy와 @Mock을 같은 필드 타입에 사용하지 마세요, 상호 간섭이 일어날 수 있습니다.
      */
 
     @Test
     @DisplayName("메일 전송 테스트 - 어노테이션")
     void sendMailByMockAnnotation() {
-        // given
+        // given : sendEmail 메서드를 스터빙하여 호출될 때마다 true를 반환하도록 함
         when(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(true);
 
-        // when
+        // when : mailService를 통해 이메일을 보내려고 시도
         boolean result = mailService.sendMail("", "", "", "");
 
         // then
-        assertThat(result).isTrue();
-        verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class));
+        assertThat(result).isTrue(); // 결과가 true이고 이메일이 '보내진 것'을 확인
+        verify(mailSendHistoryRepository, times(1)).save(any(MailSendHistory.class)); // mailSendHistoryRepository.save()가 몇번 호출이 되었는지 검증
     }
 
     @Test
     @DisplayName("메일 전송 테스트 - 객체")
     void sendMailMockObject() {
-        // given
+        // given : 이 테스트에서는 어노테이션 대신 수동으로 목을 생성
         MailSendClient mailSendClient = mock(MailSendClient.class);
         MailSendHistoryRepository mailSendHistoryRepository = mock(MailSendHistoryRepository.class);
         MailService mailService = new MailService(mailSendClient, mailSendHistoryRepository);
@@ -76,7 +75,7 @@ class MailServiceTest {
          * 나머지 기능들은 실제 기능을 사용하고 싶고 일부 기능만 stubbing 하고 싶을 때 @Spy 사용
          */
 
-        // given
+        // given : 스파이 객체에 메서드를 스터빙하기 위해 doReturn()을 사용
         doReturn(true)
                 .when(spyMailSendClient)
                 .sendEmail(anyString(), anyString(), anyString(), anyString());
@@ -99,7 +98,7 @@ class MailServiceTest {
          * 이름만 다른거지 모든 기능은 동일하다
          */
 
-        // given
+        // given : BDD 스타일의 given-when-then을 맞추기 위해 BDDMockito를 사용하여 스터빙
         BDDMockito.given(mailSendClient.sendEmail(anyString(), anyString(), anyString(), anyString()))
                 .willReturn(true);
 
