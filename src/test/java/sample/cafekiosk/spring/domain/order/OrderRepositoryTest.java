@@ -1,10 +1,13 @@
 package sample.cafekiosk.spring.domain.order;
 
 import org.assertj.core.groups.Tuple;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+import sample.cafekiosk.spring.IntegrationTestSupport;
+import sample.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductSellingStatus;
@@ -15,8 +18,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class OrderRepositoryTest {
+//@SpringBootTest
+@Transactional
+class OrderRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -24,13 +28,23 @@ class OrderRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
+    @AfterEach
+    void tearDown() {
+        orderProductRepository.deleteAllInBatch();
+        orderRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("주문시간과 주문상태로 주문을 조회한다.")
     void findOrdersBy() {
         // given
-        LocalDateTime registeredDateTime = LocalDateTime.of(2023, 11, 6, 17, 0, 0);
-        LocalDateTime startDateTime = LocalDateTime.of(2023, 11, 6, 16, 59, 59);
-        LocalDateTime endDateTime = LocalDateTime.of(2023, 11, 6, 17, 0, 1);
+        LocalDateTime registeredDateTime = LocalDateTime.of(2023, 11, 6, 17, 0);
+        LocalDateTime startDateTime = LocalDateTime.of(2023, 11, 6, 16, 59);
+        LocalDateTime endDateTime = LocalDateTime.of(2023, 11, 6, 17, 1);
         Product product1 = createProduct();
         List<Product> products = productRepository.saveAll(List.of(product1));
         Order order = Order.create(products, registeredDateTime);

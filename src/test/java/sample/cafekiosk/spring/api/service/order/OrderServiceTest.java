@@ -5,9 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import sample.cafekiosk.spring.IntegrationTestSupport;
 import sample.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import sample.cafekiosk.spring.api.controller.order.response.OrderResponse;
 import sample.cafekiosk.spring.domain.order.OrderRepository;
@@ -27,9 +25,7 @@ import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.SELLIN
 import static sample.cafekiosk.spring.domain.product.ProductType.*;
 
 //@Transactional
-@SpringBootTest
-@ActiveProfiles("test")
-class OrderServiceTest {
+class OrderServiceTest extends IntegrationTestSupport {
 
     @Autowired
     ProductRepository productRepository;
@@ -68,6 +64,14 @@ class OrderServiceTest {
         /**
          * 이 클래스에서의 테스트들이 서로 영향을 주고 있기 때문에 전체테스트를 돌릴경우 오류가 발생하고 있다
          * 해결하기 위해 @AfterEach 어노테이션을 써서 deleteAllInBatch()를 사용해주도록 하자
+         */
+
+        /**
+         * deleteAll() 과 deleteAllInBatch()의 차이
+         * deleteAllinBatch()는 delete 문을 bulk 성으로 편리하게 다 지워주는데 연관관계가 잡혀있는 엔티티에서는 순서를 신경을 써줘야 한다
+         * deleteAll()는 쿼리 로그를 보면
+         * 건마다 Order를 한번 조회하고 Order에 연관관계가 있는 orderproduct를 다시 조회하고 orderProduct를 지우고 그다음 order를 또 지운다 쿼리가 굉장히 많이 나가는 것을 볼 수 있다
+         * 그렇다고 순서를 신경 안써도 되는 것은 아니고 설계한 엔티티 모양에 따라서 순서를 신경도 써줘야 한다
          */
 
         orderProductRepository.deleteAllInBatch();
@@ -208,8 +212,18 @@ class OrderServiceTest {
 
         Stock stock1 = Stock.create("001", 2);
         Stock stock2 = Stock.create("002", 2);
-        stock1.deductQuantity(1); // todo
 
+        /**
+         * given 절에서 stock1.deductQuantity(1) 메소드로 인해 테스트를 실패할 수가 있기 때문에 이 맥락을 한번 더 생각을 해봐야 한다
+         * stock 001의 수량을 2개로 했는데 1개 감소를 했네? 라는 논리구조가 들어가게 된다
+         * given 절을 구성하는데 한번더 맥락을 이해해야 한다
+         * 또, 해당 기능의 문제가 생겼을 때 stock1.deductQuantity(3) 이렇게 하면 실패하게 된다
+         * 그렇게 되면 given 절에서 테스트가 깨지기 때문에 테스트 주제와 맞지 않는다
+         *
+         * 이렇게 2가지 문제점이 생기기 때문에 환경구성을 할 떄는 최대한 생성자 기반으로 구성하는 것이 좋다
+         */
+
+        stock1.deductQuantity(1); // todo
         stockRepository.saveAll(List.of(stock1, stock2));
 
         OrderCreateRequest request = OrderCreateRequest.builder()

@@ -1,9 +1,6 @@
 package sample.cafekiosk.spring.domain.order;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import sample.cafekiosk.spring.domain.BaseEntity;
 import sample.cafekiosk.spring.domain.orderproduct.OrderProduct;
 import sample.cafekiosk.spring.domain.product.Product;
@@ -16,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Entity
+@ToString(exclude = "orderProducts")
 @Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {

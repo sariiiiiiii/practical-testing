@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import sample.cafekiosk.spring.IntegrationTestSupport;
 
 import java.util.List;
 
@@ -12,10 +14,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static sample.cafekiosk.spring.domain.product.ProductSellingStatus.*;
 
-@ActiveProfiles("test")
-@DataJpaTest // 스프링 서버를 띄어서 테스트를 하는데 스프링부트 테스트보다 가볍고 Jpa 관련된 빈들만 주입을 해줘서 서버를 띄우기 때문에 가벼운 장점이 있음
+@Transactional
+//@ActiveProfiles("test")
+//@DataJpaTest // 스프링 서버를 띄어서 테스트를 하는데 스프링부트 테스트보다 가볍고 Jpa 관련된 빈들만 주입을 해줘서 서버를 띄우기 때문에 가벼운 장점이 있음 트랜잭션도 붙어있어서 자연스럽게 Rollback도 시켜준다
 //@SpringBootTest // 스프링 서버를 띄어서 테스트를 할 수 있음
-class ProductRepositoryTest {
+class ProductRepositoryTest extends IntegrationTestSupport {
 
     /**
      * Repository의 테스트는 단위 테스트의 성격을 많이 갖는다

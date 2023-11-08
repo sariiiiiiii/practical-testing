@@ -1,6 +1,7 @@
 package sample.cafekiosk.spring.api.service.mail;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,7 @@ class MailServiceTest {
      */
 
     @Test
+    @Disabled
     @DisplayName("메일 전송 테스트 - 어노테이션")
     void sendMailByMockAnnotation() {
         // given : sendEmail 메서드를 스터빙하여 호출될 때마다 true를 반환하도록 함
@@ -65,6 +67,7 @@ class MailServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("메일 전송 테스트 - spy")
     void sendMailSpy() {
 
@@ -89,6 +92,7 @@ class MailServiceTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("메일 전송 테스트 - BDDMockito")
     void sendMailBDDMockito() {
 

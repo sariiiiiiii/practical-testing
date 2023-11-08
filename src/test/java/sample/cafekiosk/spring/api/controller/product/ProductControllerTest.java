@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import sample.cafekiosk.spring.ControllerTestSupport;
 import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
 import sample.cafekiosk.spring.api.service.product.ProductService;
 import sample.cafekiosk.spring.api.service.product.response.ProductResponse;
@@ -23,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = ProductController.class)
-class ProductControllerTest {
+//@WebMvcTest(controllers = ProductController.class)
+class ProductControllerTest extends ControllerTestSupport {
 
     /**
      * 서비스레이어 하위로는 mocking 처리
@@ -43,14 +44,14 @@ class ProductControllerTest {
      * MockMvc.perfome() -> api를 쏘는 수행을 나타냄
      */
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper; // controller에서 직렬화 형태의 데이터를 받기 때문에 object를 json 직렬화로 시켜주기 위한 라이브러리 ObjectMapper 주입
-
-    @MockBean
-    private ProductService productService;
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @Autowired
+//    private ObjectMapper objectMapper; // controller에서 직렬화 형태의 데이터를 받기 때문에 object를 json 직렬화로 시켜주기 위한 라이브러리 ObjectMapper 주입
+//
+//    @MockBean
+//    private ProductService productService;
 
     @Test
     @DisplayName("신규 상품을 생성한다.")
