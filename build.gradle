@@ -2,6 +2,9 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+    // asciidoc 문법을 html 파일로 변환
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'sample'
@@ -15,6 +18,8 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    // asciidoctorExt에 대한 configuration을 의존성 주입
+    asciidoctorExt
 }
 
 repositories {
@@ -27,6 +32,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    // google guava (학습테스트를 위한)
+    implementation("com.google.guava:guava:32.1.3-jre")
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // @Test annotation 등 사용
 
@@ -36,8 +44,56 @@ dependencies {
 
     // h2
     runtimeOnly 'com.h2database:h2'
+
+    // RestDocs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+ext { // 전역 변수
+    // snippet(문서 조각조각)에 대한 디렉토리를 정의
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    // 테스트가 끝난 결과물을 snippetsDir 에 정의
+    outputs.dir snippetsDir
+}
+
+// ============= window 환경 시 추가 ================
+tasks.register('copyDocument', Copy) {
+    dependsOn asciidoctor
+    // 소스 코드에 html파일을 복사
+    from file("${asciidoctor.outputDir}")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+// ================================================
+
+// 순서 test => asciidoctor => bootJar
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+
+    sources { // 특정 파일만 html로 만든다.
+        include("**/index.adoc")
+    }
+    baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
+    dependsOn test // test가 실행된 다음에 asciidoctor가 수행되라
+}
+
+bootJar {
+    dependsOn asciidoctor
+    // 문서가 나왔을 건데 그 문서를 정적 파일로 보기 위해서 소스코드 내에 static/docs 하위에다가 복사하는 작업
+    from("${asciidoctor.outputDir}") {
+        into 'static/docs'
+    }
 }

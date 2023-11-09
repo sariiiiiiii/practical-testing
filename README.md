@@ -1,2 +1,2 @@
-# practical-testing
-Practical Testing: 실용적인 테스트
+## practical-testing
+[Product API 명세](src/main/resources/static/docs/index.html)
