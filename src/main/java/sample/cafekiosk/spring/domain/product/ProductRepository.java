@@ -9,20 +9,10 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    /**
-     * select *
-     * from product
-     * where selling_status in ('SELLING', 'HOLD');
-     */
     List<Product> findAllBySellingStatusIn(List<ProductSellingStatus> sellingStatuses);
 
     List<Product> findAllByProductNumberIn(List<String> productNumbers);
 
-    /**
-     * select product_number
-     * from product
-     * order by id desc limit 1
-     */
     @Query(value = "select p.product_number from Product p order by p.id desc limit 1", nativeQuery = true)
     String findLatestProductNumber();
 

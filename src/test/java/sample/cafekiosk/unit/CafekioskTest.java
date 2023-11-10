@@ -16,14 +16,6 @@ class CafekioskTest {
 
     @Test
     void add_manual_test() {
-        /**
-         * - 수동 테스트 -
-         * Cafekiosk 객체를 생성하고 그 객체에 음료를 넣어서 콘솔로 출력하는 테스트 코드를 작성하였다
-         * 결국 이 테스트 코드의 마지막 확인하는 주체는 사람이 콘솔에 잘 적혔나 확인하는 것이다
-         *
-         * 그리고 다른사람이 봤을 때 어떤 상황에서의 코드인지 확인하기가 어렵다
-         */
-
         Cafekiosk cafekiosk = new Cafekiosk();
         cafekiosk.add(new Americano());
 
@@ -32,12 +24,8 @@ class CafekioskTest {
     }
 
     @Test
-//    @DisplayName("음료 1개 추가 테스트")
-//    @DisplayName("음료 1개를 추가할 수 있다.")
     @DisplayName("음료 1개를 추가하면 주문 목록에 담긴다.")
-//    void 음료_1개_추가_테스트() {
     void add() {
-
         Cafekiosk cafekiosk = new Cafekiosk();
         cafekiosk.add(new Americano());
 
@@ -45,12 +33,10 @@ class CafekioskTest {
         assertThat(cafekiosk.getBeverages()).hasSize(1);
         assertThat(cafekiosk.getBeverages().get(0).getName()).isEqualTo("아메리카노");
         assertThat(cafekiosk.getBeverages().get(0).getPrice()).isEqualTo(4000);
-
     }
 
     @Test
     void addSeveralBeverages() {
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
         cafekiosk.add(americano, 2);
@@ -58,12 +44,10 @@ class CafekioskTest {
         assertThat(cafekiosk.getBeverages()).hasSize(2);
         assertThat(cafekiosk.getBeverages().get(0)).isEqualTo(americano);
         assertThat(cafekiosk.getBeverages().get(0)).isEqualTo(americano);
-
     }
 
     @Test
     void addZeroBeverages() {
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
 
@@ -75,7 +59,6 @@ class CafekioskTest {
 
     @Test
     void remove() {
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
 
@@ -84,12 +67,10 @@ class CafekioskTest {
 
         cafekiosk.remove(americano);
         assertThat(cafekiosk.getBeverages()).isEmpty();
-
     }
 
     @Test
     void clear() {
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
         Latte latte = new Latte();
@@ -100,7 +81,6 @@ class CafekioskTest {
 
         cafekiosk.clear();
         assertThat(cafekiosk.getBeverages()).isEmpty();
-
     }
 
     @Test
@@ -122,19 +102,7 @@ class CafekioskTest {
     }
 
     @Test
-    void test123135345() {
-
-    }
-
-    @Test
     void createOrder() {
-
-        /**
-         * 해당 테스트는 주문시간을 체크할 수 있는 테스트이다
-         * 그런데, 테스트를 하는 현재 시간이 주문 시간 범위에 벗어나게 되면 예외를 뱉게 되어 있다
-         * 이런 경우는 어떻게 해야 할까?
-         */
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
 
@@ -144,17 +112,10 @@ class CafekioskTest {
 
         assertThat(order.getBeverages()).hasSize(1);
         assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
-
     }
 
     @Test
     void createOrderWithCurrentTime() {
-
-        /**
-         * createOrder() 메소드에 현재시간이 아닌 객체 생성 시 파라미터로 시간을 정해서 넣어주는 메소드를 만들어주자
-         * 그리고 주문 운영시간이 10 ~ 22시이기 때문에 경계값인 10시로 테스트를 해주자
-         */
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
 
@@ -164,17 +125,10 @@ class CafekioskTest {
 
         assertThat(order.getBeverages()).hasSize(1);
         assertThat(order.getBeverages().get(0).getName()).isEqualTo("아메리카노");
-
     }
 
     @Test
     void createOrderOutsideOpenTime() {
-
-        /**
-         * createOrder() 메소드에 현재시간이 아닌 객체 생성 시 파라미터로 시간을 정해서 넣어주는 메소드를 만들어주자
-         * 그리고 예외 테스트를 해보기 위해 오픈 시간 경곗값인 10시에서 1분 뺴준 9시 59분으로 테스트
-         */
-
         Cafekiosk cafekiosk = new Cafekiosk();
         Americano americano = new Americano();
 
@@ -183,7 +137,6 @@ class CafekioskTest {
         assertThatThrownBy(() -> cafekiosk.createOrder(LocalDateTime.of(2023, 1, 17, 9, 59)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 시간이 아닙니다. 관리자에게 문의하세요.");
-
     }
 
 }

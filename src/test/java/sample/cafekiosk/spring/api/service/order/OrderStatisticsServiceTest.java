@@ -41,9 +41,6 @@ class OrderStatisticsServiceTest extends IntegrationTestSupport {
     @Autowired
     private MailSendHistoryRepository mailSendHistoryRepository;
 
-//    @MockBean
-//    private MailSendClient mailSendClient;
-
     @AfterEach
     void tearDown() {
         orderProductRepository.deleteAllInBatch();
@@ -68,11 +65,6 @@ class OrderStatisticsServiceTest extends IntegrationTestSupport {
         Order order3 = createPaymentCompletedOrder(LocalDateTime.of(2023, 11, 5, 23, 59, 59), products);
         Order order4 = createPaymentCompletedOrder(LocalDateTime.of(2023, 11, 6, 0, 0), products);
 
-        /**
-         * MailSendClient 클래스의 sendEmail 메소드는 실제로 이메일을 날려야 하는 로직이기 때문에 테스트 할때마다 메일을 날리는 번거로움이 있다
-         * 그럴때 Mockito.when() 메소드와 ArgumentMatchers.any() 메소드를 이용하여 Mock 객체의 행위를 정의할 수 있다
-         * Mock 객체에다가 우리가 원하는 행위를 정의하는 것을 stubbing 이라고 표현을 한다
-         */
         when(mailSendClient.sendEmail(any(String.class), any(String.class), any(String.class), any(String.class)))
                 .thenReturn(true);
 

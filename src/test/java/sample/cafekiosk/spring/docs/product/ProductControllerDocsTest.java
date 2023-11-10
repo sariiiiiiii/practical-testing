@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ProductControllerDocsTest extends RestDocsSupport {
 
-    // Spring 으로 진행하는것이 아니기 때문에 해당 방법 이용
     private final ProductService productService = mock(ProductService.class);
 
     @Override
@@ -65,14 +64,12 @@ public class ProductControllerDocsTest extends RestDocsSupport {
                                 .contentType(APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isOk()) // 여기까지는 똑같다
-                // MockMvcRestDocumentation.document()의 첫번 째 인자는 해당 테스트에 대한 id 값이라고 생각하면 된다 맘대로 정하면 된다
-                // 두 번째 인자로는 이 요청을 했을 때 어떤 요청을 넣고 어떤 응답을 넣을 것인가에 대한 정의를 해주면 된다
+                .andExpect(status().isOk())
                 .andDo(document("product-create",
-                        preprocessRequest(prettyPrint()), // json 데이터를 예쁜 형태로 만들어줌
-                        preprocessResponse(prettyPrint()), // json 데이터를 예쁜 형태로 만들어줌
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("type").type(JsonFieldType.STRING) // enum은 다 string
+                                fieldWithPath("type").type(JsonFieldType.STRING)
                                         .description("상품 타입"),
                                 fieldWithPath("sellingStatus").type(JsonFieldType.STRING)
                                         .description("상품 판매 상태").optional(),

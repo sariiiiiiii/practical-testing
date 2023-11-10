@@ -19,7 +19,6 @@ public class ProductNumberFactory {
         int latestProductNumberInt = Integer.parseInt(latestProductNumber);
         int nextProductNumberInt = latestProductNumberInt + 1;
 
-        // String.format() 3 -> 003 으로 변환
         return String.format("%03d", nextProductNumberInt);
     }
 

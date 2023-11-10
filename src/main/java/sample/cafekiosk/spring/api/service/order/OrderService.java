@@ -29,20 +29,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final StockRepository stockRepository;
 
-    /**
-     * 현재 예제에서는 키오스크가 한대이기 때문에 동시성 문제에 대해서는 생각을 따로 하지 않았다
-     * 그러나 키오스크가 무수히 많다는 가정을 할 때를 생각해보긴 해야 한다
-     * 재고 감소 -> 동시성 고민
-     * optimistic lock / pessimistic lock  ...
-     */
     public OrderResponse createOrder(OrderCreateServiceRequest request, LocalDateTime registeredDateTime) {
-        List<String> productNumbers = request.getProductNumbers(); // 상품 번호 뽑기
+        List<String> productNumbers = request.getProductNumbers();
         List<Product> products = findProductsBy(productNumbers);
 
         deductStockQuantities(products);
 
-        Order order = Order.create(products, registeredDateTime); // 주문에 입력
-        Order savedOrder = orderRepository.save(order); // 주문 저장
+        Order order = Order.create(products, registeredDateTime);
+        Order savedOrder = orderRepository.save(order);
         return OrderResponse.of(savedOrder);
     }
 
@@ -51,13 +45,12 @@ public class OrderService {
 
         Map<String, Stock> stockMap = createStockMapBy(stockProductNumbers);
         Map<String, Long> productCountingMap = createCountingMapBy(stockProductNumbers);
-        // 재고 차감 시도
+
         for (String stockProductNumber : new HashSet<>(stockProductNumbers)) {
             Stock stock = stockMap.get(stockProductNumber);
             int quantity = productCountingMap.get(stockProductNumber).intValue();
 
             if (stock.isQuantityLessThan(quantity)) {
-                // 현재 재고보다 주문 물량이 많으면 예외 발생
                 throw new IllegalArgumentException("재고가 부족한 상품이 있습니다.");
             }
 
@@ -67,9 +60,9 @@ public class OrderService {
     }
 
     private List<Product> findProductsBy(List<String> productNumbers) {
-        List<Product> products = productRepository.findAllByProductNumberIn(productNumbers); // 상품 번호 리스트로 상품 조회
+        List<Product> products = productRepository.findAllByProductNumberIn(productNumbers);
         Map<String, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getProductNumber, p -> p)); // 상품 번호 리스트로 상품 뽑기 (중복 제거를 하기 위함)
+                .collect(Collectors.toMap(Product::getProductNumber, p -> p));
 
         return productNumbers.stream()
                 .map(productMap::get)
@@ -77,7 +70,6 @@ public class OrderService {
     }
 
     private static List<String> extractStockProductNumbers(List<Product> products) {
-        // 재고 차감 체크가 필요한 상품들 filter
         return products.stream()
                 .filter(product -> ProductType.containsStockType(product.getType()))
                 .map(Product::getProductNumber)
@@ -85,14 +77,12 @@ public class OrderService {
     }
 
     private Map<String, Stock> createStockMapBy(List<String> stockProductNumbers) {
-        // 재고 엔티티 조회
         List<Stock> stocks = stockRepository.findAllByProductNumberIn(stockProductNumbers);
         return stocks.stream()
                 .collect(Collectors.toMap(Stock::getProductNumber, s -> s));
     }
 
     private static Map<String, Long> createCountingMapBy(List<String> stockProductNumbers) {
-        // 상품별 counting (key가 product가 되고 value가 카운팅이 되는 map 생성)
         return stockProductNumbers.stream()
                 .collect(Collectors.groupingBy(p -> p, Collectors.counting()));
     }

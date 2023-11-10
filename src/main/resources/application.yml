@@ -25,7 +25,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: true # (2.5~) Hibernate 초기화 시 data.sql 실행
+    defer-datasource-initialization: true
 
   h2:
     console:
@@ -47,4 +47,4 @@ spring:
 
   sql:
     init:
-      mode: never # sql initialization 실행하지 않기 위한 설정
+      mode: never

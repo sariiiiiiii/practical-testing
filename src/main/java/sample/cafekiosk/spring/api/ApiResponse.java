@@ -6,10 +6,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ApiResponse<T> {
 
-    /**
-     * 공통적으로 사용하는 api response object
-     */
-
     private int code;
 
     private HttpStatus status;

@@ -1,7 +1,10 @@
 package sample.cafekiosk.spring.api.service.product;
 
 import org.assertj.core.groups.Tuple;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import sample.cafekiosk.spring.IntegrationTestSupport;
 import sample.cafekiosk.spring.api.controller.product.dto.request.ProductCreateRequest;
@@ -25,28 +28,9 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Autowired
     ProductRepository productRepository;
 
-    /**
-     * 테스트 목적
-     * 1. 상품번호를 조회했을 때 아무것도 없으면 001로 만들어지는지
-     * 2. 상품번호가 조회 됐을 때 그 번호보다 증가된 값으로 저장이 되는지
-     */
-
-    @BeforeAll // 클래스 테스트 실행 전에 한번 실행되는거
+    @BeforeAll
     static void beforeAll() {
 
-    }
-
-    @BeforeEach // 매 테스트마다 실행전에 실행되는거
-    void setUp() {
-        /**
-         * static 한 변수 처럼 공유한 데이터로 각 테스트 마다 진행이 되게 되면 테스트에 문제가 생길 수 있다
-         * 그럼 before method는 언제 사용을 해야 하는가?
-         *
-         * 각 테스트 입장에서 봤을 때 : 아예 몰라도 테스트 내용을 이해하는 데에 문제가 없는가?
-         * 수정해도 모든 테스트에 영향을 주지 않는가?
-         *
-         * 이 조건이 들어가게 되면 before method를 사용된다라고 생각한다
-         */
     }
 
     @AfterEach
@@ -58,7 +42,7 @@ class ProductServiceTest extends IntegrationTestSupport {
     @DisplayName("신규 상품을 등록한다. 상품번호는 가장 최근 상품의 상품번호에서 1 증가한 값이다.")
     void createProduct() {
         // given
-        Product product = createProduct("001", HANDMADE, SELLING, "아메리카노", 4000);
+        Product product = createProductBuilder();
         productRepository.save(product);
 
         ProductCreateRequest request = ProductCreateRequest.builder()
@@ -95,7 +79,7 @@ class ProductServiceTest extends IntegrationTestSupport {
                 .sellingStatus(SELLING)
                 .name("카푸치노")
                 .price(5000)
-                .build(); // request 자체도 given에서 만드는 data
+                .build();
 
         // when
         ProductResponse productResponse = productService.createProduct(request.toServiceRequest());
@@ -114,13 +98,13 @@ class ProductServiceTest extends IntegrationTestSupport {
 
     }
 
-    private Product createProduct(String productNumber, ProductType type, ProductSellingStatus sellingStatus, String name, int price) {
+    private Product createProductBuilder() {
         return Product.builder()
-                .productNumber(productNumber)
-                .type(type)
-                .sellingStatus(sellingStatus)
-                .name(name)
-                .price(price)
+                .productNumber("001")
+                .type(ProductType.HANDMADE)
+                .sellingStatus(ProductSellingStatus.SELLING)
+                .name("아메리카노")
+                .price(4000)
                 .build();
     }
 

@@ -41,11 +41,6 @@ public class Cafekiosk {
         return beverages.stream()
                 .mapToInt(Beverage::getPrice)
                 .sum();
-//        int totalPrice = 0;
-//        for (Beverage beverage : beverages) {
-//            totalPrice += beverage.getPrice();
-//        }
-//        return totalPrice;
     }
 
     public Order createOrder() {

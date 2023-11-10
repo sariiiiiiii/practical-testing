@@ -11,8 +11,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Order {
 
-    private final LocalDateTime orderDateTime; // 주문일시
+    private final LocalDateTime orderDateTime;
 
-    private final List<Beverage> beverages; // 음료 리스트
+    private final List<Beverage> beverages;
 
 }

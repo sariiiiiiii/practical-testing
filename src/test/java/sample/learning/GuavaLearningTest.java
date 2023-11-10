@@ -16,11 +16,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GuavaLearningTest {
 
-    /**
-     * 학습 테스트
-     * 외부에서 라이브러리를 들고 왔을 때 그 라이브러리 테스트를 해보고 싶을 때
-     */
-
     @Test
     @DisplayName("주어진 개수만큼 List를 파티셔닝한다")
     void partitionLearningTest1() {
