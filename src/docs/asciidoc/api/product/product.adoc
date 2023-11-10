@@ -8,3 +8,13 @@ include::{snippets}/product-create/request-fields.adoc[]
 ==== HTTP Response
 include::{snippets}/product-create/http-response.adoc[]
 include::{snippets}/product-create/response-fields.adoc[]
+
+[[product-selling]]
+=== 판매 가능한 상품
+
+==== HTTP Request
+include::{snippets}/products-selling/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/products-selling/http-response.adoc[]
+include::{snippets}/products-selling/response-fields.adoc[]
